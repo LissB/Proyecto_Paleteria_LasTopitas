@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-05-2020 a las 00:49:44
+-- Tiempo de generación: 23-11-2020 a las 01:26:14
 -- Versión del servidor: 5.7.14
 -- Versión de PHP: 5.6.25
 
@@ -38,7 +38,28 @@ CREATE TABLE `compras` (
 --
 
 INSERT INTO `compras` (`idcompras`, `precioCostoProducto`, `fechaCompra`, `cantidad`) VALUES
-(1, 15, '2020-05-12', 1);
+(1, 989, '2020-05-12', 73),
+(3, 522, '2020-05-28', 49);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `controlmerma`
+--
+
+CREATE TABLE `controlmerma` (
+  `idcontrolMerma` int(11) NOT NULL,
+  `fechaMerma` date NOT NULL,
+  `cTotalMerma` double NOT NULL,
+  `totalPerdida` double NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `controlmerma`
+--
+
+INSERT INTO `controlmerma` (`idcontrolMerma`, `fechaMerma`, `cTotalMerma`, `totalPerdida`) VALUES
+(1, '2020-01-01', 29, 245);
 
 -- --------------------------------------------------------
 
@@ -52,6 +73,42 @@ CREATE TABLE `detallecompra` (
   `cantidadProducto` int(11) DEFAULT NULL,
   `subtotal` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `detallecompra`
+--
+
+INSERT INTO `detallecompra` (`Producto_idProducto`, `compras_idcompras`, `cantidadProducto`, `subtotal`) VALUES
+(1, 1, 10, 50),
+(3, 1, 5, 55),
+(3, 3, 32, 352),
+(4, 1, 38, 684),
+(6, 1, 20, 200),
+(6, 3, 17, 170);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detallecontrolmerma`
+--
+
+CREATE TABLE `detallecontrolmerma` (
+  `iddetallecontrolmerma` int(10) UNSIGNED NOT NULL,
+  `Producto_idProducto` int(10) UNSIGNED NOT NULL,
+  `controlmerma_idcontrolMerma` int(11) NOT NULL,
+  `motivoMerma` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `cantidadMerma` int(11) NOT NULL,
+  `subTotalMerma` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `detallecontrolmerma`
+--
+
+INSERT INTO `detallecontrolmerma` (`iddetallecontrolmerma`, `Producto_idProducto`, `controlmerma_idcontrolMerma`, `motivoMerma`, `cantidadMerma`, `subTotalMerma`) VALUES
+(1, 1, 1, 'El producto se perdió porque no se vendió en la fecha requerida', 15, 75),
+(2, 3, 1, 'El producto se perdió porque no se vendió en la fecha requerida', 10, 110),
+(4, 7, 1, 'El producto se perdió porque no se vendió en la fecha requerida', 4, 60);
 
 -- --------------------------------------------------------
 
@@ -72,10 +129,40 @@ CREATE TABLE `detalleventa` (
 
 INSERT INTO `detalleventa` (`Producto_idProducto`, `Ventas_idVentas`, `cantidadProducto`, `subtotal`) VALUES
 (1, 1, 2, 30),
-(2, 1, 50, 750),
-(3, 1, 5, 75),
+(1, 2, 10, 100),
+(1, 3, 50, 500),
+(1, 4, 10, 100),
+(2, 4, 10, 100),
+(2, 5, 11, 110),
+(2, 6, 7, 70),
+(3, 5, 3, 45),
 (4, 1, 4, 100),
-(4, 2, 3, 75);
+(4, 2, 30, 750),
+(4, 4, 10, 250),
+(6, 5, 1, 20);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `eventos`
+--
+
+CREATE TABLE `eventos` (
+  `ideventos` int(10) UNSIGNED NOT NULL,
+  `nombreEvento` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `nombreCliente` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `telefonoCliente` varchar(10) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `correoCliente` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `direccionEvento` varchar(70) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `fechaEvento` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `eventos`
+--
+
+INSERT INTO `eventos` (`ideventos`, `nombreEvento`, `nombreCliente`, `telefonoCliente`, `correoCliente`, `direccionEvento`, `fechaEvento`) VALUES
+(1, 'Cumpleaños', 'Maria Pere', '9851000001', 'm@gmail.co', 'c. 10', '2020-12-31');
 
 -- --------------------------------------------------------
 
@@ -97,7 +184,11 @@ CREATE TABLE `perfiles` (
 --
 
 INSERT INTO `perfiles` (`idPerfil`, `nombre`, `apellidos`, `email`, `telefono`, `idusuario`) VALUES
-(11, NULL, NULL, NULL, NULL, 11);
+(11, NULL, NULL, NULL, NULL, 11),
+(12, NULL, NULL, NULL, NULL, 12),
+(13, 'Ingrid Lisset', 'Xooc', 'ingridxooc@gmail.com', '9851000000', 13),
+(14, 'Lili Mercedes', 'Díaz Cupul', 'lili.diazcupul@itsva.edu.mx', '9851234567', 14),
+(15, 'Marcos', 'Calvario López', 'marcos.calvario@itsva.edu.mx', '9851234567', 15);
 
 -- --------------------------------------------------------
 
@@ -122,11 +213,13 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`idProducto`, `nombre`, `precioVenta`, `costoCompra`, `stockActual`, `stockMinimo`, `stockMaximo`, `descripcion`, `estado`) VALUES
-(1, 'Paleta de mago chico', 10, 0, 15, 5, 25, 'Paleta de mango temporal', 'Nuevo'),
-(2, 'Paleta de piña', 10, 0, 15, 5, 25, 'Paleta de piña temporal', 'Nuevo'),
-(3, 'Paleta de mago grande', 10, 0, 8, 10, 30, 'Paleta de mango limitado chico ', 'Nuevo'),
-(4, 'Fresa', 25, 0, 10, 5, 25, 'paleta', 'nuevo'),
-(5, 'helado de caña de azúcar', 15, 10, 8, 4, 3, 'Esta es una prueba de charset', 'nuevo');
+(1, 'Paleta de mango chico', 10, 5, 15, 5, 30, 'Paleta de mango temporal', 'Nuevo'),
+(2, 'Paleta de piña', 10, 7, 15, 5, 25, 'Paleta de piña temporal', 'Nuevo'),
+(3, 'Paleta de mango grande', 15, 11, 8, 10, 30, 'Paleta de mango limitado chico ', 'Nuevo'),
+(4, 'Paleta de fresa', 25, 18, 10, 5, 25, 'paleta de fresa bañado de chocolate', 'nuevo'),
+(6, 'Paletas de sandía', 20, 10, 8, 5, 15, 'Paletas de sandía en promoción', 'Nuevo'),
+(7, 'Paleta de sandía con chile', 20, 15, 8, 5, 15, 'Producto en promoción', 'Nuevo'),
+(8, 'Paleta de kiwi', 25, 15, 10, 5, 15, 'Producto por tiempo limitado', 'Nuevo');
 
 -- --------------------------------------------------------
 
@@ -165,7 +258,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idUsuario`, `usuario`, `password`, `idrol`) VALUES
-(11, 'Abraham', '3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2', 1);
+(11, 'Abraham', '3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2', 1),
+(12, 'luciae', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', 1),
+(13, 'ingridl', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', 1),
+(14, 'lili', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', 1),
+(15, 'marcos', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', 2);
 
 -- --------------------------------------------------------
 
@@ -187,7 +284,11 @@ CREATE TABLE `ventas` (
 
 INSERT INTO `ventas` (`idVentas`, `totalProductoVendido`, `fechaVenta`, `importeTotal`, `descuento`) VALUES
 (1, 10, '2020-05-12', 150, 15),
-(2, 3, '2020-05-13', 56, 25);
+(2, 48, '2020-05-13', 884, 5),
+(3, 50, '2020-05-22', 375, 25),
+(4, 30, '2020-05-27', 360, 20),
+(5, 15, '2020-12-31', 175, 0),
+(6, 7, '2020-12-31', 69, 1);
 
 --
 -- Índices para tablas volcadas
@@ -200,6 +301,12 @@ ALTER TABLE `compras`
   ADD PRIMARY KEY (`idcompras`);
 
 --
+-- Indices de la tabla `controlmerma`
+--
+ALTER TABLE `controlmerma`
+  ADD PRIMARY KEY (`idcontrolMerma`);
+
+--
 -- Indices de la tabla `detallecompra`
 --
 ALTER TABLE `detallecompra`
@@ -208,12 +315,28 @@ ALTER TABLE `detallecompra`
   ADD KEY `fk_Producto_has_compras_Producto_idx` (`Producto_idProducto`);
 
 --
+-- Indices de la tabla `detallecontrolmerma`
+--
+ALTER TABLE `detallecontrolmerma`
+  ADD PRIMARY KEY (`iddetallecontrolmerma`),
+  ADD UNIQUE KEY `Producto_idProducto_2` (`Producto_idProducto`),
+  ADD UNIQUE KEY `Producto_idProducto_3` (`Producto_idProducto`),
+  ADD KEY `Producto_idProducto` (`Producto_idProducto`),
+  ADD KEY `controlmerma_idcontrolMerma` (`controlmerma_idcontrolMerma`);
+
+--
 -- Indices de la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
   ADD PRIMARY KEY (`Producto_idProducto`,`Ventas_idVentas`),
   ADD KEY `fk_Producto_has_Ventas_Ventas1_idx` (`Ventas_idVentas`),
   ADD KEY `fk_Producto_has_Ventas_Producto1_idx` (`Producto_idProducto`);
+
+--
+-- Indices de la tabla `eventos`
+--
+ALTER TABLE `eventos`
+  ADD PRIMARY KEY (`ideventos`);
 
 --
 -- Indices de la tabla `perfiles`
@@ -255,27 +378,42 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `idcompras` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idcompras` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT de la tabla `controlmerma`
+--
+ALTER TABLE `controlmerma`
+  MODIFY `idcontrolMerma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `detallecompra`
 --
 ALTER TABLE `detallecompra`
-  MODIFY `Producto_idProducto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Producto_idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT de la tabla `detallecontrolmerma`
+--
+ALTER TABLE `detallecontrolmerma`
+  MODIFY `iddetallecontrolmerma` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
-  MODIFY `Producto_idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Producto_idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT de la tabla `eventos`
+--
+ALTER TABLE `eventos`
+  MODIFY `ideventos` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `perfiles`
 --
 ALTER TABLE `perfiles`
-  MODIFY `idPerfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idPerfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
@@ -285,12 +423,12 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `idVentas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idVentas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- Restricciones para tablas volcadas
 --
